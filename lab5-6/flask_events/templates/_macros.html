@@ -1,0 +1,15 @@
+{# Макрос — можливість Jinja2, якої немає в DTL. Один рендеринг для всіх полів форми. #}
+{% macro render_field(field) %}
+  <div class="field{% if field.errors %} has-error{% endif %}">
+    {{ field.label }}
+    {{ field(**kwargs) }}
+    {% if field.description %}<small class="help">{{ field.description }}</small>{% endif %}
+    {% for error in field.errors %}
+      <p class="error">{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro seats_badge(seats) %}
+  {% if seats %}Місць: {{ seats }}{% else %}<span class="sold">Місць немає</span>{% endif %}
+{% endmacro %}

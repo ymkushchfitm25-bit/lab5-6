@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+
+{% block title %}Реєстрація{% endblock %}
+
+{% block content %}
+<h1>Реєстрація на подію</h1>
+
+{# novalidate вимикає HTML5-перевірку браузера, щоб було видно СЕРВЕРНУ валідацію WTForms #}
+<form method="post" class="form" novalidate>
+  {{ form.hidden_tag() }}  {# прихований CSRF-токен #}
+
+  {{ render_field(form.full_name) }}
+  {{ render_field(form.email) }}
+  {{ render_field(form.event) }}
+  {{ render_field(form.message) }}
+
+  <button type="submit" class="button">Зареєструватися</button>
+</form>
+{% endblock %}

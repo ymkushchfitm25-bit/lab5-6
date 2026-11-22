@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% from "_macros.html" import seats_badge %}
+
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>{{ site_slogan }}</h1>
+  {# Арифметика та фільтр з атрибутом — у DTL так не можна #}
+  <p>Зараз в афіші <strong>{{ events_total }}</strong> подій,
+     вільних місць: <strong>{{ events | sum(attribute='seats_left') }}</strong>.</p>
+  <a class="button" href="{{ url_for('register') }}">Зареєструватися</a>
+</section>
+
+<h2>Найближчі події</h2>
+{% if featured %}
+  <div class="cards">
+    {% for event in featured %}
+      <article class="card">
+        <p class="meta">{{ event.date | ua_date }} · {{ event.city }}</p>
+        <h3>{{ event.title }}</h3>
+        <p>{{ event.description | truncate(90, killwords=False) }}</p>
+        <p class="meta">{{ seats_badge(event.seats_left) }}</p>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>Подій поки немає.</p>
+{% endif %}
+
+<h2>Категорії</h2>
+<ul class="inline-list">
+  {% for name, count in categories.items() %}
+    <li>{{ name }}: {{ count }}</li>
+  {% endfor %}
+</ul>
+
+<h2>Останні реєстрації ({{ registrations | length }})</h2>
+{% if registrations %}
+  <ol>
+    {% for reg in registrations %}
+      <li>{{ reg.name }} — {{ reg.event }}</li>
+    {% endfor %}
+  </ol>
+{% else %}
+  <p class="muted">{{ empty_note | default("Ще ніхто не зареєструвався — будьте першими!") }}</p>
+{% endif %}
+{% endblock %}

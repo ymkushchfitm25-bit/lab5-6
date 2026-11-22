@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ heading }}{% endblock %}
+
+{% block content %}
+{# Виклик методу з аргументами та фільтр selectattr — можливості Jinja2, відсутні в DTL #}
+{% set free_events = events | selectattr('price', 'equalto', 0) | list %}
+<h1>{{ heading }} ({{ events | length }})</h1>
+<p>Безкоштовних подій: {{ free_events | length }}. Студентська знижка — 20 %.</p>
+
+{% if events %}
+  <table class="table">
+    <thead>
+      <tr><th>№</th><th>Дата</th><th>Подія</th><th>Місто</th><th>Ціна</th><th>Студентам</th><th>Місць</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for event in events %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ event.date | ua_date('short') }}<br><small class="muted">{{ event.date | ua_date('weekday') }}</small></td>
+          <td>
+            <strong>{{ event.title }}</strong><br>
+            <small>{{ event.description.split()[:10] | join(' ') }}…</small>
+          </td>
+          <td>{{ event.city.upper() }}</td>
+          <td>{% if event.price %}{{ "%.2f" | format(event.price) }} грн{% else %}безкоштовно{% endif %}</td>
+          <td>{% if event.price %}{{ (event.price * 0.8) | round | int }} грн{% else %}—{% endif %}</td>
+          <td>{{ event.seats_left or "—" }}</td>
+          <td>
+            {% if event.seats_left %}
+              <a class="button small" href="{{ url_for('register', event=event.slug) }}">Записатися</a>
+            {% else %}
+              <span class="sold">Розпродано</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>Подій немає.</p>
+{% endif %}
+
+<h2>Автоекранування (XSS)</h2>
+<p>Рядок <code>xss_sample</code> з view виведено як текст, а не виконано: {{ xss_sample }}</p>
+{% endblock %}

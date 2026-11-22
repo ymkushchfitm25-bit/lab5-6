@@ -1,0 +1,5 @@
+# Flask-проєкт «ПодіїUA». Встановлення: pip install -r requirements.txt
+# Python 3.10+
+Flask>=3.0
+Flask-WTF>=1.2
+email-validator>=2.0   # потрібен валідатору Email() з WTForms
